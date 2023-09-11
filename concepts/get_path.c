@@ -27,6 +27,11 @@ char *get_path(char *cmd)
 		{
 			token_len = strlen(token_path);
 			full_path = malloc(cmd_len + token_len + 2);/*one for / and NULL*/
+			if (full_path == NULL)
+			{
+				free(path_cpy);
+				return (NULL);
+			}
 			/*copy token obtained into the fullpath*/
 			strcpy(full_path, token_path);
 			strcat(full_path, "/");
