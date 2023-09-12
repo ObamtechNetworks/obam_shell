@@ -51,17 +51,18 @@ int main(void)
 		else
 		{
 			wait(&status);
-			/*free the allocated space*/
-			free(lines_buffer);
-			free(lines_read);
-			i = 0;
-			while (argv[i] != NULL)
-			{
-				free(argv[i]);
-				i++;
-			}
-			free(argv);
 		}
 	}
+	/*free the allocated space*/
+	free(lines_buffer);
+	free(lines_read);
+	i = 0;
+	while (argv[i] != NULL)
+	{
+		free(argv[i]);
+		i++;
+	}
+	free(argv);
+
 	return (0);
 }

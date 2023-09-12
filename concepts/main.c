@@ -1,39 +1,62 @@
 #include "shell.h"
 
 /**
- * main - test codes
- * Return: 0 (Success)
+ * main - reads user input and print
+ * Return: 0
  */
 
 int main(void)
 {
-	char word[] = "I want to break and test this string";
-	char *delim = " ";
-	int i;
+	const char *delim = " \n";
+	char **argv;
+	int i = 0;
+	char *user_input;
+	char *lines_read;
 
-	char **tokens = split_str(word, delim);
-
-	/*if tokens == NULL*/
-	if (tokens == NULL)
+	pid_t child;
+	int status;
+	while (1)
 	{
-		perror("memory alloc failed");
-		return (-1);
+		/*call the prompt function*/
+		user_input = prompt();
+
+		/*split inputs into arguments*/
+		argv = split_str(user_input, delim);
+		if (argv == NULL)
+		{
+			free(user_input);
+			i = 0;
+			while (argv[i] != NULL)
+			{
+				free(argv[i]);
+				i++;
+			}
+			return (-1);
+		}
+		/*create child process*/
+		child = fork();
+		/*check return value*/
+		if (child == -1)
+		{
+			perror("process failed");
+			return (-1);
+		}
+
+		if (child == 0)
+			run_cmd(argv);
+		else
+		{
+			wait(&status);
+		}
 	}
-
+	/*free the allocated space*/
+	free(user_input);
 	i = 0;
-	while (tokens[i] != NULL)
+	while (argv[i] != NULL)
 	{
-		printf("%s\n", tokens[i]);
+		free(argv[i]);
 		i++;
 	}
-
-	i = 0;
-	while (tokens[i] != NULL)
-	{
-		free(tokens[i]);
-		i++;
-	}
-	free(tokens);
-
+	free(argv);
 	return (0);
 }
